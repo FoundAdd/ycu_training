@@ -4,13 +4,12 @@ import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Objects;
 
 public class MainFrame extends JFrame{
 
-    private JPanel jPanel;
+    private final JPanel jPanel;
     private AudioClip audioClip;
     private boolean isMusicPlay = true;
 
@@ -32,31 +31,34 @@ public class MainFrame extends JFrame{
             super.paintComponent(g);
             // 设置背景图片
             bgMusic("audio/bg.wav");
-            ImageIcon img = new ImageIcon(MainFrame.class.getClassLoader().getResource("img/bg.jpg"));
+            ImageIcon img = new ImageIcon(Objects.requireNonNull(MainFrame.class.getClassLoader().getResource("img/bg.jpg")));
             g.drawImage(img.getImage(), 0, 0, this);
             }
         };
 
-        jPanel.setLayout(null);//将jpanel默认的流式布局更改为空布局
+        jPanel.setLayout(null);//将JPanel默认的流式布局更改为空布局
 
         JButton jbStart = new JButton("开始游戏");
         JButton jbEnd = new JButton("结束游戏");
         JButton jbTips = new JButton("操作提示");
-        JButton jbVolume = new JButton("音乐: 开/关");
+        JButton jbVolume = new JButton("音乐: 开");
 
         // “开始游戏”按钮监听事件
         jbStart.addActionListener(e -> startGame());
         // “结束游戏”按钮监听事件
         jbEnd.addActionListener(e -> System.exit(0));
         // “操作提示”按钮监听事件
-        jbTips.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "人物移动: ↑上, ↓下, ←左, →右"+ "\r\n后退一步: 空格键"));
+        jbTips.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this,
+                "人物移动: ↑上, ↓下, ←左, →右"+ "\r\n后退一步: 空格键"));
         // 音乐控制按钮监听事件
         jbVolume.addActionListener(e -> {
             if (isMusicPlay) {
                 audioClip.stop();
+                jbVolume.setText("音乐: 关");
                 isMusicPlay = false;
             } else {
                 audioClip.play();
+                jbVolume.setText("音乐: 开");
                 isMusicPlay = true;
             }
         });
@@ -93,7 +95,7 @@ public class MainFrame extends JFrame{
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                ImageIcon img=new ImageIcon(MainFrame.class.getClassLoader().getResource("img/toolImg.jpg"));
+                ImageIcon img=new ImageIcon(Objects.requireNonNull(MainFrame.class.getClassLoader().getResource("img/toolImg.jpg")));
                 g.drawImage(img.getImage(), 0, 0, this);
             }
         };
