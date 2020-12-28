@@ -1,5 +1,7 @@
 package pushBox;
 
+import org.junit.jupiter.api.Test;
+
 import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
@@ -10,8 +12,8 @@ import java.util.Objects;
 public class MainFrame extends JFrame{
 
     private final JPanel jPanel;
-    private AudioClip audioClip;
     private boolean isMusicPlay = true;
+    private AudioClip audioClip;
 
     public MainFrame(){
         this.setTitle("推箱子");
@@ -89,8 +91,15 @@ public class MainFrame extends JFrame{
     }
 
     public void startGame() {
+        isMusicPlay = true;
         audioClip.stop();
+
+        // 移除上一个页面的组件
+        for (int i=0; i<jPanel.getComponentCount(); i++) {
+            jPanel.remove(i);
+        }
         this.remove(this.jPanel);
+
         JPanel jpMenu = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -101,13 +110,16 @@ public class MainFrame extends JFrame{
         };
         this.setLayout(null);
         jpMenu.setBounds(600, 0, 200, 600);
+        jpMenu.setLayout(null); //不设置为null就会在按钮点击后所有按钮布局错乱
         this.add(jpMenu);
+
+        this.bgMusic("audio/gameBg.wav");
 
         JButton jbLast = new JButton("上一关");
         JButton jbNext = new JButton("下一关");
         JButton jbChoice = new JButton("选关");
         JButton jbRestart = new JButton("重新开始");
-        JButton jbVolume = new JButton("音乐开关");
+        JButton jbVolume = new JButton("音乐: 开");
         JButton jbExit = new JButton("退出游戏");
 
         jpMenu.add(jbLast);
@@ -128,20 +140,29 @@ public class MainFrame extends JFrame{
         jbVolume.addActionListener(e -> {
             if (isMusicPlay) {
                 audioClip.stop();
+                jbVolume.setText("音乐: 关");
                 isMusicPlay = false;
             } else {
                 audioClip.play();
+                jbVolume.setText("音乐: 开");
                 isMusicPlay = true;
             }
         });
         // “退出游戏”按钮监听事件
         jbExit.addActionListener(e -> System.exit(0));
-
-        this.bgMusic("audio/gameBg.wav");
+        // test
+        jbChoice.addActionListener(e -> {
+            for (int i=0; i<jpMenu.getComponentCount(); i++) {
+                String[] temp = jpMenu.getComponent(i).toString().split(",");
+                System.out.printf(temp[temp.length-2].split("=")[1] + "\t按钮Y坐标: ");
+                System.out.println(jpMenu.getComponent(i).getBounds().y);
+            }
+        });
         this.repaint();
     }
 
     public static void main(String[] args) {
         new MainFrame();
     }
+
 }
