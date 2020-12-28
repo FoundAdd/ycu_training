@@ -6,16 +6,17 @@ import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainFrame extends JFrame{
 
+    private JPanel jPanel;
+    private AudioClip audioClip;
+    private boolean isMusicPlay = true;
+
     public MainFrame(){
         this.setTitle("推箱子");
-        this.setSize(750, 420);
+        this.setSize(800, 600);
 
         //窗口居中
         int screenWidth= Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -25,7 +26,7 @@ public class MainFrame extends JFrame{
         this.setLocation((screenWidth-windowWidth)/2, (screenHeight-windowHeight)/2);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel jPanel = new JPanel() {
+        jPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -41,26 +42,34 @@ public class MainFrame extends JFrame{
         JButton jbStart = new JButton("开始游戏");
         JButton jbEnd = new JButton("结束游戏");
         JButton jbTips = new JButton("操作提示");
+        JButton jbVolume = new JButton("音乐: 开/关");
 
         // “开始游戏”按钮监听事件
-        jbStart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+        jbStart.addActionListener(e -> startGame());
         // “结束游戏”按钮监听事件
         jbEnd.addActionListener(e -> System.exit(0));
         // “操作提示”按钮监听事件
         jbTips.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "人物移动: ↑上, ↓下, ←左, →右"+ "\r\n后退一步: 空格键"));
+        // 音乐控制按钮监听事件
+        jbVolume.addActionListener(e -> {
+            if (isMusicPlay) {
+                audioClip.stop();
+                isMusicPlay = false;
+            } else {
+                audioClip.play();
+                isMusicPlay = true;
+            }
+        });
 
-        jbStart.setBounds(630, 250, 100, 30);
-        jbEnd.setBounds(630, 300, 100, 30);
-        jbTips.setBounds(630, 350, 100, 30);
+        jbStart.setBounds(680, 360, 100, 30);
+        jbEnd.setBounds(680, 410, 100, 30);
+        jbTips.setBounds(680, 460, 100, 30);
+        jbVolume.setBounds(680, 510, 100, 30);
 
         jPanel.add(jbStart);
         jPanel.add(jbEnd);
         jPanel.add(jbTips);
+        jPanel.add(jbVolume);
 
         this.add(jPanel);
         this.setResizable(false);//设置窗口不可改变大小
@@ -71,11 +80,63 @@ public class MainFrame extends JFrame{
         //设置背景音乐
         URL cb = MainFrame.class.getClassLoader().getResource(musicPath);
 
-        AudioClip audioClip;
         audioClip = Applet.newAudioClip(cb);
 
         audioClip.play();
         audioClip.loop(); // 设置循环播放
+    }
+
+    public void startGame() {
+        audioClip.stop();
+        this.remove(this.jPanel);
+        JPanel jpMenu = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon img=new ImageIcon(MainFrame.class.getClassLoader().getResource("img/toolImg.jpg"));
+                g.drawImage(img.getImage(), 0, 0, this);
+            }
+        };
+        this.setLayout(null);
+        jpMenu.setBounds(600, 0, 200, 600);
+        this.add(jpMenu);
+
+        JButton jbLast = new JButton("上一关");
+        JButton jbNext = new JButton("下一关");
+        JButton jbChoice = new JButton("选关");
+        JButton jbRestart = new JButton("重新开始");
+        JButton jbVolume = new JButton("音乐开关");
+        JButton jbExit = new JButton("退出游戏");
+
+        jpMenu.add(jbLast);
+        jpMenu.add(jbNext);
+        jpMenu.add(jbChoice);
+        jpMenu.add(jbRestart);
+        jpMenu.add(jbVolume);
+        jpMenu.add(jbExit);
+
+        jbLast.setBounds(50, 250, 100, 30);
+        jbNext.setBounds(50, 300, 100, 30);
+        jbChoice.setBounds(50, 350, 100, 30);
+        jbRestart.setBounds(50, 400, 100, 30);
+        jbVolume.setBounds(50, 450, 100, 30);
+        jbExit.setBounds(50, 500, 100, 30);
+
+        // 音乐控制按钮监听事件
+        jbVolume.addActionListener(e -> {
+            if (isMusicPlay) {
+                audioClip.stop();
+                isMusicPlay = false;
+            } else {
+                audioClip.play();
+                isMusicPlay = true;
+            }
+        });
+        // “退出游戏”按钮监听事件
+        jbExit.addActionListener(e -> System.exit(0));
+
+        this.bgMusic("audio/gameBg.wav");
+        this.repaint();
     }
 
     public static void main(String[] args) {
