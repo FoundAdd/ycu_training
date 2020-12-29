@@ -1,7 +1,5 @@
 package pushBox;
 
-import org.junit.jupiter.api.Test;
-
 import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
@@ -10,7 +8,6 @@ import java.net.URL;
 import java.util.Objects;
 
 public class MainFrame extends JFrame{
-
     private final JPanel jPanel;
     private boolean isMusicPlay = true;
     private AudioClip audioClip;

@@ -1,10 +1,11 @@
 package pushBox;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 public class LoadMap {
     private int[][] map = new int[20][20];
-
     public int[][] getMap() {
         return map;
     }
