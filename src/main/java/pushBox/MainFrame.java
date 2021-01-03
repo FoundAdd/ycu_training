@@ -4,11 +4,14 @@ import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.Objects;
 
 public class MainFrame extends JFrame{
     private final JPanel jPanel;
+    private JpGame jpGame;
     private boolean isMusicPlay = true;
     private AudioClip audioClip;
 
@@ -112,6 +115,7 @@ public class MainFrame extends JFrame{
 
         this.bgMusic("audio/gameBg.wav");
 
+        JButton jbBack = new JButton("撤销");
         JButton jbLast = new JButton("上一关");
         JButton jbNext = new JButton("下一关");
         JButton jbChoice = new JButton("选关");
@@ -119,6 +123,7 @@ public class MainFrame extends JFrame{
         JButton jbVolume = new JButton("音乐: 开");
         JButton jbExit = new JButton("退出游戏");
 
+        jpMenu.add(jbBack);
         jpMenu.add(jbLast);
         jpMenu.add(jbNext);
         jpMenu.add(jbChoice);
@@ -126,6 +131,7 @@ public class MainFrame extends JFrame{
         jpMenu.add(jbVolume);
         jpMenu.add(jbExit);
 
+        jbLast.setBounds(50, 200, 100, 30);
         jbLast.setBounds(50, 250, 100, 30);
         jbNext.setBounds(50, 300, 100, 30);
         jbChoice.setBounds(50, 350, 100, 30);
@@ -147,14 +153,12 @@ public class MainFrame extends JFrame{
         });
         // “退出游戏”按钮监听事件
         jbExit.addActionListener(e -> System.exit(0));
-        // test
-        jbChoice.addActionListener(e -> {
-            for (int i=0; i<jpMenu.getComponentCount(); i++) {
-                String[] temp = jpMenu.getComponent(i).toString().split(",");
-                System.out.printf(temp[temp.length-2].split("=")[1] + "\t按钮Y坐标: ");
-                System.out.println(jpMenu.getComponent(i).getBounds().y);
-            }
-        });
+
+        this.jpGame = new JpGame(1);
+
+        this.add(jpGame);
+        this.jpGame.addKeyListener(new MoveListener());
+        this.jpGame.requestFocus();
         this.repaint();
     }
 
@@ -162,4 +166,11 @@ public class MainFrame extends JFrame{
         new MainFrame();
     }
 
+    class MoveListener extends KeyAdapter {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            super.keyReleased(e);
+            jpGame.move(e);
+        }
+    }
 }

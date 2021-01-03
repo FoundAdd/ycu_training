@@ -1,17 +1,26 @@
 package pushBox;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.*;
 
 public class LoadMap {
     private int[][] map = new int[20][20];
+    private int manX, manY;
+
+    public int getManX() {
+        return manX;
+    }
+
+    public int getManY() {
+        return manY;
+    }
+
     public int[][] getMap() {
         return map;
     }
 
     public LoadMap(int level) {
-        File file=new File("maps/"+level+".map");
+        File file=new File(String.valueOf(LoadMap.class.getClassLoader().getResource("maps/" + level + ".map")).replace("file:/", ""));
+        System.out.println(file.toPath());
         BufferedReader bufferedReader = null;
         FileReader fileReader = null;
 
